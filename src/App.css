@@ -1,0 +1,15 @@
+.ql-container {
+  min-height: 100px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.ql-container::-webkit-scrollbar {
+  display: none;
+}
+
+.drop-zone {
+  border: 1px dashed black;
+  padding: 16px;
+  text-align: center;
+}
