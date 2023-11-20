@@ -4,7 +4,7 @@ import ImageCropModal from "./ImageCropModal";
 import "./ImageUploader.scss";
 import "react-image-crop/dist/ReactCrop.css";
 
-function ImageDropZone({ className }) {
+function ImageDropZone({ className, maximumFile }) {
   const [files, setFiles] = useState([]);
   const [rejectedFiles, setRejectedFiles] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,6 +31,7 @@ function ImageDropZone({ className }) {
     accept: {
       "image/*": [],
     },
+    maxFiles: maximumFile,
     // maxSize: 1024 * 1000,
   });
 
@@ -46,6 +47,8 @@ function ImageDropZone({ className }) {
     setSelectedImage({ current: img });
     setIsEditing(true);
   }
+
+  // console.log(files);
 
   const previews = files.map((file) => (
     <div className="preview" key={file.name}>
@@ -70,11 +73,33 @@ function ImageDropZone({ className }) {
   ));
 
   function updateFile(origin, newImg) {
+    // Spread operator does not work
+    setFiles((prevArray) => {
+      return prevArray.map((file) => {
+        if (file.preview === origin) {
+          return {
+            path: file.path,
+            preview: newImg,
+            lastModified: file.lastModified,
+            lastModifiedDate: file.lastModifiedDate,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            webkitRelativePath: file.webkitRelativePath,
+          };
+        } else {
+          return file;
+        }
+      });
+    });
+
+    /*
     setFiles((prevArray) => {
       return prevArray.map((file) =>
         file.preview === origin ? { ...file, preview: newImg } : file
       );
     });
+    */
   }
 
   async function makeClientCrop(crop, fullImgWidth, fullImgHeight) {

@@ -17,7 +17,6 @@ const TOOLBAR_OPTIONS = [
 ];
 
 function Editor() {
-  //   const [value, setValue] = useState(markdownToHtml(props.value || ""));
   const [value, setValue] = useState("");
   const reactQuillRef = useRef(null);
   const onChange = (content) => {
@@ -45,7 +44,6 @@ function Editor() {
           "emoji-shortname": true,
         }}
         value={value}
-        // style={{ height: "auto", max-height: "200px", overflow: "auto"; }}
         onChange={onChange}
         className="editor"
       />
