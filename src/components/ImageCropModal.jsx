@@ -13,18 +13,18 @@ function ImageCropModal({
   const imgContainerRef = useRef(null);
   const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
 
-  const onCropComplete = (crop, fullImgWidth, fullImgHeight) => {
+  function onCropComplete(crop, fullImgWidth, fullImgHeight) {
     setSelectedImage({ current: null });
     setIsEditing(false);
     makeClientCrop(crop, fullImgWidth, fullImgHeight);
     setCrop();
-  };
+  }
 
-  const cancelEdit = () => {
+  function cancelEdit() {
     setSelectedImage({ current: null });
     setIsEditing(false);
     setCrop();
-  };
+  }
 
   function onImageLoad() {
     const width = imgDimensions.width;
@@ -68,7 +68,7 @@ function ImageCropModal({
     };
   }, []);
 
-  const handleOutSideClick = (event) => {
+  function handleOutSideClick(event) {
     if (
       imgContainerRef.current &&
       !imgContainerRef.current.contains(event.target) &&
@@ -76,7 +76,7 @@ function ImageCropModal({
     ) {
       cancelEdit();
     }
-  };
+  }
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutSideClick);
@@ -85,8 +85,6 @@ function ImageCropModal({
       document.removeEventListener("mousedown", handleOutSideClick);
     };
   }, [imgContainerRef]);
-
-  console.log("adjusted load", crop);
 
   return (
     <div className="modal-background">

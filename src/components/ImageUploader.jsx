@@ -20,12 +20,10 @@ function ImageDropZone({ className }) {
         ),
       ]);
     }
-    // console.log("accepted file", acceptedFiles);
 
     if (rejectedFiles?.length) {
       setRejectedFiles((previousFiles) => [...previousFiles, ...rejectedFiles]);
     }
-    // console.log("rejected file", rejectedFiles);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -49,8 +47,6 @@ function ImageDropZone({ className }) {
     setIsEditing(true);
   }
 
-  console.log(selectedImage);
-
   const previews = files.map((file) => (
     <div className="preview" key={file.name}>
       <div className="preview-inner">
@@ -73,7 +69,15 @@ function ImageDropZone({ className }) {
     </div>
   ));
 
-  const makeClientCrop = async (crop, fullImgWidth, fullImgHeight) => {
+  function updateFile(origin, newImg) {
+    setFiles((prevArray) => {
+      return prevArray.map((file) =>
+        file.preview === origin ? { ...file, preview: newImg } : file
+      );
+    });
+  }
+
+  async function makeClientCrop(crop, fullImgWidth, fullImgHeight) {
     if (selectedImage.current && crop.width && crop.height) {
       const croppedImage = await getCroppedImg(
         selectedImage.current,
@@ -83,10 +87,11 @@ function ImageDropZone({ className }) {
         fullImgHeight
       );
       setCroppedImageUrl(croppedImage);
+      updateFile(selectedImage.current, croppedImage);
     }
-  };
+  }
 
-  const getCroppedImg = (file, crop, fileName, fullImgWidth, fullImgHeight) => {
+  function getCroppedImg(file, crop, fileName, fullImgWidth, fullImgHeight) {
     return new Promise((resolve, reject) => {
       const image = new Image();
       image.src = file;
@@ -125,15 +130,14 @@ function ImageDropZone({ className }) {
         reject(new Error("Image loading error"));
       };
     });
-  };
+  }
 
-  // useEffect(
-  //   () => () => {
-  //     // Make sure to revoke the Object URL to avoid memory leaks
-  //     files.forEach((file) => URL.revokeObjectURL(file.preview));
-  //   },
-  //   [files]
-  // );
+  useEffect(() => {
+    return () => {
+      // Revoke the image URL to prevent memory leaks
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
+    };
+  }, []);
 
   return (
     <>
@@ -163,7 +167,7 @@ function ImageDropZone({ className }) {
                   type="button"
                   onClick={() => removeRejectedFile(obj.file.name)}
                 >
-                  Delete Image
+                  Delete
                 </button>
               </div>
             </li>
@@ -173,8 +177,6 @@ function ImageDropZone({ className }) {
           <div className="">
             <ImageCropModal
               selectedImage={selectedImage.current}
-              // onCropComplete={onCropComplete}
-              // cancelEdit={cancelEdit}
               setSelectedImage={setSelectedImage}
               setIsEditing={setIsEditing}
               makeClientCrop={makeClientCrop}

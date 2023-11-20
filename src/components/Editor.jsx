@@ -16,42 +16,43 @@ const TOOLBAR_OPTIONS = [
   ["clean"],
 ];
 
-function Editor(props) {
+function Editor() {
   //   const [value, setValue] = useState(markdownToHtml(props.value || ""));
-  const [value, setValue] = useState(props.value || "");
+  const [value, setValue] = useState("");
   const reactQuillRef = useRef(null);
-
   const onChange = (content) => {
-    // setValue(content);
-
-    // if (props.onChange) {
-    //   props.onChange({
-    //     html: content,
-    //     markdown: htmlToMarkdown(content),
-    //   });
-    // }
-    // const mdContent = htmlToMarkdown(content);
     setValue(content);
   };
 
+  function handleFormSubmit(text) {
+    const convertedText = htmlToMarkdown(text);
+    console.log(convertedText);
+    setValue("");
+  }
+
   return (
-    <ReactQuill
-      ref={reactQuillRef}
-      theme="snow"
-      placeholder="Start writing..."
-      modules={{
-        toolbar: {
-          container: TOOLBAR_OPTIONS,
-        },
-        "emoji-toolbar": true,
-        "emoji-textarea": false,
-        "emoji-shortname": true,
-      }}
-      value={value}
-      // style={{ height: "auto", max-height: "200px", overflow: "auto"; }}
-      onChange={onChange}
-      className="editor"
-    />
+    <>
+      <ReactQuill
+        ref={reactQuillRef}
+        theme="snow"
+        placeholder="Start writing..."
+        modules={{
+          toolbar: {
+            container: TOOLBAR_OPTIONS,
+          },
+          "emoji-toolbar": true,
+          "emoji-textarea": false,
+          "emoji-shortname": true,
+        }}
+        value={value}
+        // style={{ height: "auto", max-height: "200px", overflow: "auto"; }}
+        onChange={onChange}
+        className="editor"
+      />
+      <button type="button" onClick={() => handleFormSubmit(value)}>
+        Save
+      </button>
+    </>
   );
 }
 
